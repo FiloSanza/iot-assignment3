@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-async function RollerBlindController() {
+function RollerBlindController() {
   const [value, setValue] = useState(-1);
   const value_endpoint = 'http://localhost:1234/rollerblind/state';
 
