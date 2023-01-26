@@ -5,5 +5,6 @@
 
 #include "light_sensor.h"
 #include "pir.h"
+#include "led.h"
 
 #endif
