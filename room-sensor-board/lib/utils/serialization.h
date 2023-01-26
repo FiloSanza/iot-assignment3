@@ -6,7 +6,7 @@
 namespace Serialize {
     class Json {
     public:
-        void serialize(const RoomReading& value, char* output);
+        static void serialize(const RoomReading& value, char* output);
     };
 }
 
