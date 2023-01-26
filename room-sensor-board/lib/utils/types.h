@@ -7,4 +7,9 @@
 typedef uint8_t pin_t;
 typedef unsigned long timestamp_t;
 
+struct RoomReading {
+    float light;
+    bool pir;
+};
+
 #endif
