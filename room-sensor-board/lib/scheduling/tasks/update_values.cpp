@@ -29,6 +29,12 @@ namespace Tasks {
             this->pir->read()
         };
 
+        if (value.pir) {
+            this->led->turnOn();
+        } else {
+            this->led->turnOff();
+        }
+
         Serialize::Json::serialize(value, buffer);
 
         this->pool->send(buffer);

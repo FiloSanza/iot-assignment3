@@ -8,12 +8,18 @@
 namespace Tasks {
     class UpdateValues : public Scheduling::PeriodicTask {
     public:
-        UpdateValues(Comms::CommPool* pool, Components::Pir* pir, Components::LightSensor* light_sensor);
+        UpdateValues(
+            Comms::CommPool* pool, 
+            Components::Led* led, 
+            Components::Pir* pir, 
+            Components::LightSensor* light_sensor
+        );
         void init();
         void tick();
     private:
         Comms::CommPool* pool;
 
+        Components::Led* led;
         Components::Pir* pir;
         Components::LightSensor* light_sensor;
     };
