@@ -1,6 +1,8 @@
 #include "smart_room.h"
 #include "logger.h"
 
+#include <ArduinoJson.h>
+
 namespace Tasks {
     SmartRoom::SmartRoom(
         Components::Led* lighting_subsystem,
@@ -22,34 +24,35 @@ namespace Tasks {
 
         markExecutedNow();
 
-        Logger::Message log_msg;
-
-        lighting_subsystem->turnOn();
-        log_msg.setTag(SmartRoomMessageTag::LightOff)
-            .setDescription("Lightning subsystem update")
-            .log();
-
         // if (MsgServiceBT.isMsgAvailable()) {
         //     Msg* msg = MsgServiceBT.receiveMsg();    
         //     updateRoom(msg);
         // }
 
-        // if (MsgService.isMsgAvailable()) {
-        //     Msg* msg = MsgService.receiveMsg();    
-        //     updateRoom(msg);
-        // }
+        if (MsgService.isMsgAvailable()) {
+            lighting_subsystem->turnOn();
+            // Msg* msg = MsgService.receiveMsg();  
+            // updateRoom(msg);
+        }
     }
 
     void SmartRoom::updateRoom(Msg* msg) {
         Logger::Message log_msg;
-        if (msg->getContent() == "movement"){
-            roller_blinds->moveTo(SERVO_UPPER_BOUND);
-        } else if (msg->getContent() == "light_on") {
-            lighting_subsystem->turnOn();
-            log_msg.setTag(SmartRoomMessageTag::LightOn)
-                .setDescription("Lightning subsystem update")
-                .log();
-        } else if (msg->getContent() == "light_off") {
+
+        String json = msg->getContent();
+        DynamicJsonDocument doc(1024);
+        deserializeJson(doc, json);
+
+        if (doc.containsKey("light")) {
+            if (doc["light"] == "1") {
+                lighting_subsystem->turnOn();
+                log_msg.setTag(SmartRoomMessageTag::LightOn);
+            } else {
+                lighting_subsystem->turnOff();
+                log_msg.setTag(SmartRoomMessageTag::LightOff);
+            }
+            log_msg.setDescription("Lightning subsystem update").log();
+        } else if (doc.containsKey("angle")) {
             lighting_subsystem->turnOff();
             log_msg.setTag(SmartRoomMessageTag::LightOff)
                 .setDescription("Lightning subsystem update")
