@@ -18,14 +18,14 @@ def get_logs():
 def update_light():
     lvl = request.get_json()["light"]
     s = f'{{"light":{lvl}}}'
-    arduino.write_byte(json.dumps(s))
+    arduino.write_byte(s)
     
-    return json.dumps(s)
+    return s
     
 @app.route('/update_servo', methods=['POST'])
 def update_servo():
     angle = request.get_json()["angle"]
     s = f'{{"angle":{angle}}}'
-    arduino.write_byte(json.dumps(s))
+    arduino.write_byte(s)
 
-    return json.dumps(s)
+    return s
