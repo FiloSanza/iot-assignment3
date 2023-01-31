@@ -4,7 +4,7 @@ from dataclasses_json import dataclass_json
 @dataclass_json
 @dataclass
 class Message:
-    tag: int
-    time: int
     data: str
     desc: str
+    time: int
+    tag: int

@@ -6,9 +6,10 @@ class SerialLine():
     def __init__(self, port, baudrate, timeout) -> None:
         self.arduino = serial.Serial(port=port, baudrate=baudrate, timeout=timeout)
     
-    def write_byte(self, data: int):
+    def write_byte(self, data: str):
         try:
-            self.arduino.write(bytes([data]))
+            data += "\n"
+            self.arduino.write(data.encode())
         except Exception:
             pass
     
