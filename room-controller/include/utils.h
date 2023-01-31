@@ -2,5 +2,6 @@
 #define _UTILS_H_INCLUDED
 
 #include "logger.h"
+#include "MsgService.h"
 
 #endif
