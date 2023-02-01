@@ -2,7 +2,9 @@
 #define _UPDATE_VALUES_H_INCLUDED
 
 #include "task.h"
-#include "components.h"
+#include "light_sensor.h"
+#include "pir.h"
+#include "led.h"
 #include "comm_pool.h"
 
 namespace Tasks {

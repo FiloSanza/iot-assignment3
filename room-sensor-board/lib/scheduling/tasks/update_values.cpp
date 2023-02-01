@@ -6,9 +6,11 @@
 namespace Tasks {
     UpdateValues::UpdateValues(
         Comms::CommPool* pool,
+        Components::Led* led, 
         Components::Pir* pir, 
         Components::LightSensor* light_sensor
     ) : pool(pool),
+        led(led),
         pir(pir),
         light_sensor(light_sensor) {
         this->setPeriodAndRestartTimer(UPDATE_VALUES_PERIOD);
@@ -35,7 +37,7 @@ namespace Tasks {
             this->led->turnOff();
         }
 
-        Serialize::Json::serialize(value, buffer);
+        Serialize::Json::serialize(value, buffer, 64);
 
         this->pool->send(buffer);
     }
