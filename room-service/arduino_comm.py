@@ -1,6 +1,6 @@
 from typing import List
 import serial
-from message import Message
+import json
 
 class SerialLine():
     def __init__(self, port, baudrate, timeout) -> None:
@@ -13,7 +13,7 @@ class SerialLine():
         except Exception:
             pass
     
-    def read(self) -> List[Message]:
+    def read(self) -> List:
         msgs = []
         while True:
             line = ''
@@ -26,8 +26,10 @@ class SerialLine():
                 break
 
             try:
-                msgs.append(Message.from_json(line))
+                msgs.append(json.loads(line))
             except Exception:
+                # Need to handle "half lines"
+                print(f"DESERIALIZER EXCEPTION: {line}")
                 pass
 
         return msgs
