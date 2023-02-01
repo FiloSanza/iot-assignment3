@@ -5,13 +5,12 @@
 #include "light_sensor.h"
 #include "pir.h"
 #include "led.h"
-#include "comm_pool.h"
 
 namespace Tasks {
     class UpdateValues : public Scheduling::PeriodicTask {
     public:
         UpdateValues(
-            Comms::CommPool* pool, 
+            void (*mqtt_callback)(const char*), 
             Components::Led* led, 
             Components::Pir* pir, 
             Components::LightSensor* light_sensor
@@ -19,7 +18,7 @@ namespace Tasks {
         void init();
         void tick();
     private:
-        Comms::CommPool* pool;
+        void (*mqtt_callback)(const char*);
 
         Components::Led* led;
         Components::Pir* pir;

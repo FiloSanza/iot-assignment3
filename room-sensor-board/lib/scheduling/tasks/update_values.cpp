@@ -5,11 +5,11 @@
 
 namespace Tasks {
     UpdateValues::UpdateValues(
-        Comms::CommPool* pool,
+        void (*mqtt_callback)(const char*),
         Components::Led* led, 
         Components::Pir* pir, 
         Components::LightSensor* light_sensor
-    ) : pool(pool),
+    ) : mqtt_callback(mqtt_callback),
         led(led),
         pir(pir),
         light_sensor(light_sensor) {
@@ -25,7 +25,6 @@ namespace Tasks {
 
         this->markExecutedNow();
 
-        char buffer[64];
         RoomReading value = {
             this->light_sensor->read(),
             this->pir->read()
@@ -37,8 +36,8 @@ namespace Tasks {
             this->led->turnOff();
         }
 
-        Serialize::Json::serialize(value, buffer, 64);
+        String data = Serialize::Json::serialize(value);
 
-        this->pool->send(buffer);
+        this->mqtt_callback(data.c_str());
     }
 }

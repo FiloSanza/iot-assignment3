@@ -10,7 +10,11 @@ namespace Comms {
         WiFi.begin(ssid, password);
 
         while(WiFi.status() != WL_CONNECTED) {
+            Serial.print('.');
             delay(500);
         }
+
+        Serial.print("\nConnected: ");
+        Serial.println(WiFi.localIP());
     }
 }

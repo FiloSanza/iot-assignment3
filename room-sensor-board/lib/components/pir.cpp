@@ -3,7 +3,9 @@
 namespace Components
 {
     Pir::Pir() {}
-    Pir::Pir(pin_t pin) : pin(pin), last_state(false), last_detected_at(0) {}
+    Pir::Pir(pin_t pin) : pin(pin), last_state(false), last_detected_at(0) {
+        pinMode(pin, INPUT);
+    }
 
     bool Pir::read() {
         bool value = digitalRead(pin) == HIGH;
