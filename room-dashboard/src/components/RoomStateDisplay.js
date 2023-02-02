@@ -4,7 +4,7 @@ import axios from 'axios';
 
 function RoomStateDisplay() {
   const [room_state, setRoomState] = useState(null);
-  const room_state_endpoint = 'http://localhost:1234/room/state';
+  const room_state_endpoint = 'http://localhost:1234/data';
 
   useEffect(() => {
     const getRoomState = async function () {
@@ -17,6 +17,10 @@ function RoomStateDisplay() {
       getRoomState();
     }
   }, []);
+
+  if (room_state === null) {
+    return <></>;
+  }
 
   return (
     <div>

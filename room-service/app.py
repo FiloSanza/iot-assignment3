@@ -115,15 +115,15 @@ def update_data():
 serial_reads_thread = threading.Thread(target=update_data)
 serial_reads_thread.start()
 
-@app.route('/get_logs', methods=['GET'])
-def get_logs():
+@app.route('/data', methods=['GET'])
+def get_data():
     lock.acquire()
     response = json.dumps(data)
     lock.release()
 
     return response
 
-@app.route('/update_light', methods=['POST'])
+@app.route('/light', methods=['POST'])
 def update_light():
     lock.acquire()
     state = request.get_json()["light"]
@@ -136,10 +136,10 @@ def update_light():
     
     return response
     
-@app.route('/update_servo', methods=['POST'])
-def update_servo():
+@app.route('/rollerblinds', methods=['POST'])
+def update_rollerblinds():
     lock.acquire()
-    angle = request.get_json()["angle"]
+    angle = request.get_json()["value"]
     arduino.write_byte(f'{{"angle":{angle}}}')
     data[ROLLERBLINDS_STATE] = angle
 

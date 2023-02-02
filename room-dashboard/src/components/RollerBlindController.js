@@ -3,11 +3,12 @@ import axios from 'axios';
 
 function RollerBlindController() {
   const [value, setValue] = useState(-1);
-  const value_endpoint = 'http://localhost:1234/rollerblind/state';
+  const value_endpoint = 'http://localhost:1234/data';
+  const rollerblinds_endpoint = 'http://localhost:1234/rollerblinds';
 
   const update_value = async function(evt) {
     const new_value = evt.target.value;
-    await axios.post(value_endpoint, { value: new_value });
+    await axios.post(rollerblinds_endpoint, { value: new_value });
     setValue(new_value);
   }
 
@@ -23,6 +24,10 @@ function RollerBlindController() {
     }
   }, []);
   
+  if (value === null) {
+    return <></>;
+  }
+
   return (
     <div>
       <form>
