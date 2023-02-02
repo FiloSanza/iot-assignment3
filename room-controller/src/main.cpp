@@ -9,18 +9,20 @@ Components::Led* lighting_subsystem;
 
 Tasks::SmartRoom* smart_room;
 
+MsgServiceBT* msg_serviceBT;
 Scheduling::Scheduler* scheduler = new Scheduling::Scheduler();
 
-
 void setup() {
-  MsgServiceBT.init();
+  msg_serviceBT = new MsgServiceBT(RX_PIN, TX_PIN);
   MsgService.init();
   lighting_subsystem = new Components::Led(LED_PIN);
   roller_blinds = new Components::Motor(SERVO_PIN);
-  
+
+
   smart_room = new Tasks::SmartRoom(
     lighting_subsystem,
     roller_blinds,
+    msg_serviceBT,
     1000
   );
 
