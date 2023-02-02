@@ -14,5 +14,7 @@ constexpr int SERVO_UPPER_BOUND = 180;
 //Pins
 constexpr int LED_PIN = 6;
 constexpr int SERVO_PIN = 9;
+constexpr int RX_PIN = 2;
+constexpr int TX_PIN = 3;
 
 #endif

@@ -2,9 +2,7 @@
 #include "MsgService.h"
 
 String content;
-
 MsgServiceSerial MsgService;
-MsgServiceBluetooth MsgServiceBT;
 
 bool MsgServiceSerial::isMsgAvailable(){
   return msgAvailable;
@@ -34,32 +32,42 @@ void MsgServiceSerial::sendMsg(const String& msg){
   Serial.println(msg);  
 }
 
-bool MsgServiceBluetooth::isMsgAvailable(){
-  return msgAvailable;
+MsgServiceBT::MsgServiceBT(int rxPin, int txPin){
+  channel = new SoftwareSerial(rxPin, txPin);
 }
 
-Msg* MsgServiceBluetooth::receiveMsg(){
-  if (msgAvailable){
-    Msg* msg = currentMsg;
-    msgAvailable = false;
-    currentMsg = NULL;
-    content = "";
+void MsgServiceBT::init(){
+  content.reserve(256);
+  channel->begin(9600);
+  availableMsg = NULL;
+}
+
+bool MsgServiceBT::sendMsg(Msg msg){
+  channel->println(msg.getContent());  
+}
+
+bool MsgServiceBT::isMsgAvailable(){
+  while (channel->available()) {
+    char ch = (char) channel->read();
+    if (ch == '\n'){
+      availableMsg = new Msg(content); 
+      content = "";
+      return true;    
+    } else {
+      content += ch;      
+    }
+  }
+  return false;  
+}
+
+Msg* MsgServiceBT::receiveMsg(){
+  if (availableMsg != NULL){
+    Msg* msg = availableMsg;
+    availableMsg = NULL;
     return msg;  
   } else {
-    return NULL; 
+    return NULL;
   }
-}
-
-void MsgServiceBluetooth::init(){
-  Serial.begin(9600);
-  content.reserve(128);
-  content = "";
-  currentMsg = NULL;
-  msgAvailable = false;  
-}
-
-void MsgServiceBluetooth::sendMsg(const String& msg){
-  Serial.println(msg+"$");  
 }
 
 void serialEvent() {
@@ -68,15 +76,8 @@ void serialEvent() {
     char ch = (char) Serial.read();
     if (ch == '\n'){      
       if (content.length() > 0) {
-        int index = content.indexOf('$');        
-        if (index != -1){
-          content = content.substring(0,index);
-          MsgServiceBT.currentMsg = new Msg(content);
-          MsgServiceBT.msgAvailable = true;      
-        } else {
-          MsgService.currentMsg = new Msg(content);
-          MsgService.msgAvailable = true;      
-        }
+        MsgService.currentMsg = new Msg(content);
+        MsgService.msgAvailable = true;      
       }
     } else {
       content += ch;      

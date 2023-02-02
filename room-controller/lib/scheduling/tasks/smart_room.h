@@ -15,6 +15,7 @@ namespace Tasks {
         SmartRoom(
             Components::Led* lighting_subsystem,
             Components::Motor* roller_blinds,
+            MsgServiceBT* msg_serviceBT,
             timestamp_t period
         );
 
@@ -23,6 +24,7 @@ namespace Tasks {
     private:
         Components::Led* lighting_subsystem;
         Components::Motor* roller_blinds;
+        MsgServiceBT* msg_serviceBT;
 
         void updateRoom(Msg* msg);
     };

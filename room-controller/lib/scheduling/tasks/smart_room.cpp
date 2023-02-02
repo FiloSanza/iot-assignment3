@@ -7,13 +7,16 @@ namespace Tasks {
     SmartRoom::SmartRoom(
         Components::Led* lighting_subsystem,
         Components::Motor* roller_blinds,
+        MsgServiceBT* msg_serviceBT,
         timestamp_t period
     ) : lighting_subsystem(lighting_subsystem),
-        roller_blinds(roller_blinds) {
+        roller_blinds(roller_blinds),
+        msg_serviceBT(msg_serviceBT) {
             setPeriodAndRestartTimer(period);
         }
 
     void SmartRoom::init() {
+        msg_serviceBT->init();
         roller_blinds->moveTo(SERVO_LOWER_BOUND);
     }
 
@@ -24,8 +27,8 @@ namespace Tasks {
 
         markExecutedNow();
 
-        if (MsgServiceBT.isMsgAvailable()) {
-            Msg* msg = MsgServiceBT.receiveMsg();    
+        if (msg_serviceBT->isMsgAvailable()) {
+            Msg* msg = msg_serviceBT->receiveMsg();    
             updateRoom(msg);
         }
 

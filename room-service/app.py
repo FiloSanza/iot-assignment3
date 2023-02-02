@@ -10,6 +10,33 @@ import json
 
 app = Flask(__name__)
 CORS(app)
+
+# Mqtt configuration
+app.config['MQTT_BROKER_URL'] = 'localhost' # See https://mosquitto.org/
+app.config['MQTT_BROKER_PORT'] = 1883
+app.config['MQTT_KEEPALIVE'] = 5  # Set KeepAlive time in seconds
+app.config['MQTT_TLS_ENABLED'] = False  # If your server supports TLS, set it True
+topic = 'smart-room'
+mqtt_client = Mqtt(app)
+
+# Connect Callback function
+@mqtt_client.on_connect()
+def handle_connect(client, userdata, flags, rc):
+   if rc == 0:
+       print('Connected successfully')
+       mqtt_client.subscribe(topic) # subscribe topic
+   else:
+       print('Bad connection. Code:', rc)
+       
+# Message callback function 
+@mqtt_client.on_message()
+def handle_mqtt_message(client, userdata, message):
+   data = dict(
+       topic=message.topic,
+       payload=message.payload.decode()
+  )
+   print('Received message on topic: {topic} with payload: {payload}'.format(**data))
+   
 arduino = arduino_comm.SerialLine(port="/dev/ttyACM0", baudrate=9600, timeout=0.1)
 
 app.config['MQTT_BROKER_URL'] = 'broker.hivemq.com'
@@ -25,7 +52,7 @@ lock = threading.Lock()
 data = {
     LIGHT_LOGS: [{
         'state': 0,
-        'ts': datetime.now()
+        'ts': datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     }],
     PIR_STATE: 0,
     LIGHT_STATE: 0,
@@ -37,7 +64,7 @@ def update_light_state(state):
     if state != data[LIGHT_STATE]:
         data[LIGHT_LOGS].append({
             'state': state,
-            'ts': datetime.now()
+            'ts': datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         })
         data[LIGHT_STATE] = state
 

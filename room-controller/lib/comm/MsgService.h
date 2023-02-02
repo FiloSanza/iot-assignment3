@@ -2,6 +2,7 @@
 #define __MSGSERVICE__
 
 #include "Arduino.h"
+#include "SoftwareSerial.h"
 
 class Msg {
   String content;
@@ -31,22 +32,23 @@ public:
   void sendMsg(const String& msg);
 };
 
-class MsgServiceBluetooth {
+class MsgServiceBT {
     
 public: 
-
-  Msg* currentMsg;
-  bool msgAvailable;
-
+  MsgServiceBT(int rxPin, int txPin);  
   void init();  
-
   bool isMsgAvailable();
-  Msg* receiveMsg();  
- 
-  void sendMsg(const String& msg);
+  Msg* receiveMsg();
+  bool sendMsg(Msg msg);
+
+private:
+  String content;
+  Msg* availableMsg;
+  SoftwareSerial* channel;
+  
 };
 
+
 extern MsgServiceSerial MsgService;
-extern MsgServiceBluetooth MsgServiceBT;
 
 #endif
