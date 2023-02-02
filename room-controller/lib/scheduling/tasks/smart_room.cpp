@@ -42,12 +42,13 @@ namespace Tasks {
         Logger::Message log_msg;
 
         String json = msg->getContent();
-        DynamicJsonDocument doc(512);
+        DynamicJsonDocument doc(32);
         DeserializationError error = deserializeJson(doc, json);
         if (error) {
             Serial.print(F("deserializeJson() failed: "));
             Serial.println(error.f_str());
         }
+
         if (doc.containsKey("light")) {
             if (doc["light"] == 1) {
                 lighting_subsystem->turnOn();
