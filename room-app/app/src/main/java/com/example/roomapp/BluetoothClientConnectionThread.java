@@ -12,10 +12,10 @@ import java.util.function.Consumer;
 @SuppressLint("MissingPermission")
 public class BluetoothClientConnectionThread extends Thread {
     private final BluetoothSocket socket;
-    private BluetoothAdapter btAdapter;
-    Consumer<BluetoothSocket> handler;
+    private final BluetoothAdapter btAdapter;
+    private final Consumer<BluetoothSocket> handler;
 
-    public BluetoothClientConnectionThread(BluetoothDevice device, BluetoothAdapter btAdapter, Consumer<BluetoothSocket> handler) {
+    public BluetoothClientConnectionThread(final BluetoothDevice device, final BluetoothAdapter btAdapter, final Consumer<BluetoothSocket> handler) {
         // Use a temporary object that is later assigned to socket
         // because socket is final.
         this.btAdapter = btAdapter;

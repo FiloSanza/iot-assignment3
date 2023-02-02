@@ -1,6 +1,7 @@
 package com.example.roomapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -10,6 +11,7 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -21,7 +23,7 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 @SuppressLint("MissingPermission")
-public class LedSwitchActivity extends AppCompatActivity {
+public class ControllerActivity extends AppCompatActivity {
 
     private OutputStream bluetoothOutputStream;
     private Button remoteButton;
@@ -31,9 +33,9 @@ public class LedSwitchActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_led_switch);
+        setContentView(R.layout.activity_controller);
         ledState = false;
         initUI();
     }
@@ -46,10 +48,12 @@ public class LedSwitchActivity extends AppCompatActivity {
         slider = findViewById(R.id.discreteSlider);
         slider.setEnabled(false);
         slider.addOnSliderTouchListener(new Slider.OnSliderTouchListener() {
+            @SuppressLint("RestrictedApi")
             @Override
             public void onStartTrackingTouch(@NonNull Slider slider) {
             }
 
+            @SuppressLint("RestrictedApi")
             @Override
             public void onStopTrackingTouch(@NonNull Slider slider) {
                 new Thread(() -> {

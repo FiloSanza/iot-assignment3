@@ -36,11 +36,11 @@ public class ScanActivity extends AppCompatActivity {
     public static final String X_BLUETOOTH_DEVICE_EXTRA = "X_BLUETOOTH_DEVICE_EXTRA";
 
 
-    private List<BluetoothDevice> scannedDevices = new ArrayList<>();
-    private List<String> scannedNameList = new ArrayList<>();
+    private final List<BluetoothDevice> scannedDevices = new ArrayList<>();
+    private final List<String> scannedNameList = new ArrayList<>();
 
-    private List<BluetoothDevice> pairedDevices = new ArrayList<>();
-    private List<String> pairedNameList = new ArrayList<>();
+    private final List<BluetoothDevice> pairedDevices = new ArrayList<>();
+    private final List<String> pairedNameList = new ArrayList<>();
     private BluetoothAdapter btAdapter;
 
     private ListView scannedListView;
@@ -48,7 +48,6 @@ public class ScanActivity extends AppCompatActivity {
     private Button scanButton;
     private ArrayAdapter<String> scannedListAdapter;
     private ArrayAdapter<String> pairedListAdapter;
-    private boolean bluetoothEnabled = false;
 
     //When new bluetooth devices are discovered Bluetooth the system sends out an event.
     //A broadcast receiver is needed to capture system events and react accordingly
@@ -63,7 +62,7 @@ public class ScanActivity extends AppCompatActivity {
     };
 
     @SuppressLint("MissingPermission")
-    private void onBluetoothDeviceFound(BluetoothDevice device) {
+    private void onBluetoothDeviceFound(final BluetoothDevice device) {
         this.scannedDevices.add(device);
         if(device.getName()!= null){
             this.scannedNameList.add(device.getName());
@@ -76,7 +75,7 @@ public class ScanActivity extends AppCompatActivity {
     /* ================== LIFECYCLE ========================== */
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -170,7 +169,7 @@ public class ScanActivity extends AppCompatActivity {
     @SuppressLint("MissingPermission")
     private void onDeviceClicked(BluetoothDevice device) {
         logMessage(device.getName());
-        Intent intent = new Intent(this, LedSwitchActivity.class);
+        Intent intent = new Intent(this, ControllerActivity.class);
         intent.putExtra(X_BLUETOOTH_DEVICE_EXTRA, device);
         startActivity(intent);
     }
