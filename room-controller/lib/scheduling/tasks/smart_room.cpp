@@ -60,7 +60,8 @@ namespace Tasks {
                 .setDescription("Lightning subsystem update")
                 .log();
         } else if (doc.containsKey("angle")) {
-            roller_blinds->moveTo(doc["angle"]);
+            int angle =  map(doc["angle"], 0, 100, 0, 180);
+            roller_blinds->moveTo(angle);
             log_msg.setTag(SmartRoomMessageTag::Valve)
                 .setData(doc["angle"])
                 .setDescription("Roller blinds update")

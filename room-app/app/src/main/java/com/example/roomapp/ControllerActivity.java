@@ -36,7 +36,7 @@ public class ControllerActivity extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_controller);
-        ledState = false;
+        ledState = true;
         initUI();
     }
 
@@ -58,6 +58,7 @@ public class ControllerActivity extends AppCompatActivity {
             public void onStopTrackingTouch(@NonNull Slider slider) {
                 new Thread(() -> {
                     try {
+                        Integer value = Math.round(slider.getValue());
                         String message = "{\"angle\":" + Integer.toString(Math.round(slider.getValue())) + "}\n";
                         Log.e(C.TAG, message);
                         bluetoothOutputStream.write(message.getBytes(StandardCharsets.UTF_8));
@@ -104,7 +105,7 @@ public class ControllerActivity extends AppCompatActivity {
         }
         runOnUiThread(() -> {
             remoteButton.setEnabled(true);
-            remoteButton.setBackgroundColor(Color.RED);
+            remoteButton.setBackgroundColor(Color.GREEN);
             slider.setEnabled(true);
         });
     }
