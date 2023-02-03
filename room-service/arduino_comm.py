@@ -4,9 +4,10 @@ import json
 
 class SerialLine():
     def __init__(self, port, baudrate, timeout) -> None:
+        self.half = ""
         self.arduino = serial.Serial(port=port, baudrate=baudrate, timeout=timeout)
     
-    def write_byte(self, data: str):
+    def write_byte(self, data: str):        
         try:
             data += "\n"
             self.arduino.write(data.encode())
@@ -18,7 +19,11 @@ class SerialLine():
         while True:
             line = ''
             try:
-                line = self.arduino.read_until(b"\n").decode()[:-1]
+                line = self.arduino.read_until(b"\n")
+                if (line[-1] == b"\n"):
+                    line = line[:-1]
+                
+                line = line.decode()
             except Exception:
                 pass
             
@@ -29,7 +34,7 @@ class SerialLine():
                 msgs.append(json.loads(line))
             except Exception:
                 # Need to handle "half lines"
-                print(f"DESERIALIZER EXCEPTION: {line}")
-                pass
+                msgs.append(json.loads(self.half + line))
+                self.half = ""
 
         return msgs
