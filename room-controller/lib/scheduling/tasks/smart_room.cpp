@@ -1,8 +1,6 @@
 #include "smart_room.h"
 #include "logger.h"
 
-#include <ArduinoJson.h>
-
 namespace Tasks {
     SmartRoom::SmartRoom(
         Components::Led* lighting_subsystem,
@@ -12,6 +10,8 @@ namespace Tasks {
     ) : lighting_subsystem(lighting_subsystem),
         roller_blinds(roller_blinds),
         msg_serviceBT(msg_serviceBT) {
+            doc = new DynamicJsonDocument(32);
+            log_msg = new Logger::Message();
             setPeriodAndRestartTimer(period);
         }
 
@@ -28,45 +28,39 @@ namespace Tasks {
         markExecutedNow();
 
         if (msg_serviceBT->isMsgAvailable()) {
-            Msg* msg = msg_serviceBT->receiveMsg();    
-            updateRoom(msg);
+            msg = msg_serviceBT->receiveMsg(); 
+            log_msg->setBt(1);   
+            updateRoom(log_msg, msg);
         }
 
         if (MsgService.isMsgAvailable()) {
-            Msg* msg = MsgService.receiveMsg();  
-            updateRoom(msg);
+            msg = MsgService.receiveMsg();  
+            log_msg->setBt(0);
+            updateRoom(log_msg, msg);
         }
     }
 
-    void SmartRoom::updateRoom(Msg* msg) {
-        Logger::Message log_msg;
-
-        String json = msg->getContent();
-        DynamicJsonDocument doc(32);
-        DeserializationError error = deserializeJson(doc, json);
+    void SmartRoom::updateRoom(Logger::Message* log_msg, Msg* msg) {
+        DeserializationError error = deserializeJson(*doc, msg->getContent());
         if (error) {
             Serial.print(F("deserializeJson() failed: "));
             Serial.println(error.f_str());
         }
 
-        if (doc.containsKey("light")) {
-            if (doc["light"] == 1) {
+        if (doc->containsKey("light")) {
+            if ((*doc)["light"] == 1) {
                 lighting_subsystem->turnOn();
             } else {
                 lighting_subsystem->turnOff();
             }
-            log_msg.setTag(SmartRoomMessageTag::Light)
-                .setData(doc["light"])
-                .setDescription("Lightning subsystem update")
-                .log();
-        } else if (doc.containsKey("angle")) {
-            int angle =  map(doc["angle"], 0, 100, 0, 180);
+        } 
+        if (doc->containsKey("angle")) {
+            int angle =  map((*doc)["angle"], 0, 100, 0, 180);
             roller_blinds->moveTo(angle);
-            log_msg.setTag(SmartRoomMessageTag::Valve)
-                .setData(doc["angle"])
-                .setDescription("Roller blinds update")
-                .log();
         }
+        log_msg->setLight(lighting_subsystem->isOn() ? 1 : 0)
+            .setAngle(roller_blinds->read())
+            .log();
     }
     
 }

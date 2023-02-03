@@ -77,7 +77,8 @@ void serialEvent() {
     if (ch == '\n'){      
       if (content.length() > 0) {
         MsgService.currentMsg = new Msg(content);
-        MsgService.msgAvailable = true;      
+        MsgService.msgAvailable = true;
+        content = "";
       }
     } else {
       content += ch;      

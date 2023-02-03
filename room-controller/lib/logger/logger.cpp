@@ -3,25 +3,20 @@
 #include <Arduino.h>
 
 namespace Logger {
-    Message::Message() : timestamp(millis()) {}
+    Message::Message() {}
 
-    Message& Message::setData(String data) {
-        this->data = data;
+    Message& Message::setLight(int light) {
+        this->light = light;
         return *this;
     }
 
-    Message& Message::setTag(uint32_t tag) {
-        this->tag = tag;
+    Message& Message::setAngle(int angle) {
+        this->angle = angle;
         return *this;
     }
 
-    Message& Message::setTimestamp(timestamp_t timestamp) {
-        this->timestamp = timestamp;
-        return *this;
-    }
-
-    Message& Message::setDescription(String desc) {
-        this->desc = desc;
+    Message& Message::setBt(int bt) {
+        this->bt = bt;
         return *this;
     }
 
@@ -29,20 +24,16 @@ namespace Logger {
         Logger::getInstance().log(*this);
     }
 
-    String Message::getData() const {
-        return data;
+    String Message::getLight() const {
+        return light;
     }
 
-    uint32_t Message::getTag() const {
-        return tag;
+    String Message::getAngle() const {
+        return angle;
     }
 
-    String Message::getDescription() const {
-        return desc;
-    }
-
-    timestamp_t Message::getTimestamp() const {
-        return timestamp;
+    String Message::getBt() const {
+        return bt;
     }
 
     Logger::Logger() {}
@@ -55,10 +46,9 @@ namespace Logger {
     void Logger::log(const Message& msg) {
 
         String str = 
-            "{\"data\": \"" + msg.getData() + "\"" +
-            ", \"desc\": \"" + msg.getDescription() + "\"" +
-            ", \"time\": " + String(msg.getTimestamp()) +
-            ", \"tag\": " + String(msg.getTag()) + " }";
+            "{ \"light\": \"" + msg.getLight() + "\"" +
+            ", \"angle\": \"" + msg.getAngle() + "\"" +
+            ", \"bt\": \"" + msg.getBt() + "\"" + " }";
 
         Serial.println(str);
     }

@@ -9,22 +9,19 @@ namespace Logger {
     public:
         Message();
 
-        Message& setData(String data);
-        Message& setTimestamp(timestamp_t timestamp);
-        Message& setDescription(String desc);
-        Message& setTag(uint32_t tag);
+        Message& setLight(int light);
+        Message& setAngle(int angle);
+        Message& setBt(int bt);
         
         void log() const;
-        String getData() const;
-        timestamp_t getTimestamp() const;
-        String getDescription() const;
-        uint32_t getTag() const;
+        String getLight() const;
+        String getAngle() const;
+        String getBt() const;
 
     private:
-        String data;
-        String desc;
-        timestamp_t timestamp;
-        uint32_t tag = -1;
+        String bt;
+        String light;
+        String angle;
     };
 
     class Logger {
