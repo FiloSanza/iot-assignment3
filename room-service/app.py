@@ -8,7 +8,7 @@ import threading
 import json
 import time
 
-arduino = arduino_comm.SerialLine(port="/dev/ttyACM1", baudrate=9600, timeout=0.1)
+arduino = arduino_comm.SerialLine(port="/dev/ttyACM0", baudrate=9600, timeout=0.1)
 
 app = Flask(__name__)
 CORS(app)
@@ -31,6 +31,7 @@ data = {
     LIGHT_STATE: 0,
     ROLLERBLINDS_STATE: 0,
 }
+bt_last_message = None
 
 def update_light_state(state):
     if state == data[LIGHT_STATE]:
@@ -51,15 +52,19 @@ def handle_connect(client, userdata, flags, rc):
 
 @mqtt.on_message()
 def handle_mqtt_message(client, userdata, message):
-    topic, payload = message.topic, json.loads(message.payload.decode())
-
-    print(payload)
+    
+    global bt_last_message
+    
+    payload = json.loads(message.payload.decode())
+    
+    lock.acquire()
+    if bt_last_message != None and (datetime.now() - bt_last_message).total_seconds() < TIME_THRESHOLD:
+        lock.release()
+        return
 
     pir = payload['pir']
     light_state = 1 if payload['pir'] and payload['light'] < LIGHT_THRESHOLD else 0
     
-    lock.acquire()
-
     data[PIR_STATE] = pir
     
     changes = {}
@@ -72,7 +77,7 @@ def handle_mqtt_message(client, userdata, message):
     if data[ROLLERBLINDS_STATE] > 0 and not pir and datetime.now().hour > 19:
         data[ROLLERBLINDS_STATE] = 0
         changes['angle'] = 0
-
+    
     if update_light_state(light_state):
         changes['light'] = light_state
 
@@ -82,17 +87,24 @@ def handle_mqtt_message(client, userdata, message):
     arduino.write_byte(update)
 
 def update_data():
+    
+    global bt_last_message
+    
     while True:
         serial_data = arduino.read()
-
+        print(serial_data)
         lock.acquire()
         for msg in serial_data:
             # The light state has been updated
             if LIGHT_STATE in msg:
                 update_light_state(msg[LIGHT_STATE])
             # The rollerblind state changed
-            elif ROLLERBLINDS_STATE in msg:
+            if ROLLERBLINDS_STATE in msg:
                 data[ROLLERBLINDS_STATE] = msg[ROLLERBLINDS_STATE]
+            # Update bluetooth last message
+            if BLUETOOTH in msg and msg[BLUETOOTH] == '1':
+                bt_last_message = datetime.now()
+            
         lock.release()
         time.sleep(0.5)
 

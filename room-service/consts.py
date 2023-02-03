@@ -1,7 +1,9 @@
-ROLLERBLINDS_STATE = 'rollerblinds_state'
-LIGHT_STATE = 'light_state'
+ROLLERBLINDS_STATE = 'angle'
+LIGHT_STATE = 'light'
 LIGHT_LOGS = 'light_logs'
 PIR_STATE = 'pir_state'
 TIMESTAMP = 'timestamp'
+BLUETOOTH = 'bt'
 
 LIGHT_THRESHOLD = 2000
+TIME_THRESHOLD = 10
