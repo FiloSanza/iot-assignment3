@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 function RollerBlindController() {
-  const [value, setValue] = useState(-1);
+  const [value, setValue] = useState(50);
   const value_endpoint = 'http://localhost:1234/data';
   const rollerblinds_endpoint = 'http://localhost:1234/rollerblinds';
 
@@ -22,16 +22,16 @@ function RollerBlindController() {
     if (value === -1) {
       getRollerBlindState();
     }
-  }, []);
+  }, [value]);
   
   if (value === null) {
     return <></>;
   }
 
   return (
-    <div>
-      <form>
-        <label for="roller-blind-controller"> Roller Blinds: </label>
+    <div className='w-1/2'>
+      <form className='max-w-fit mx-auto'>
+        <label htmlFor="roller-blind-controller"> Roller Blinds: </label>
         <input id="roller-blind-controller" type="range" min="0" max="100" name="roller-blind-controller" value={ value } onChange={ update_value } />
       </form>
     </div>
