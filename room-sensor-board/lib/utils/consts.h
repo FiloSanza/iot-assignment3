@@ -24,7 +24,7 @@ constexpr pin_t LIGHT_SENSOR_PIN = A0;
 constexpr int MAX_NUMBER_OF_COMMS = 4;
 
 // MQTT
-constexpr const char* MQTT_SERVER = "broker.mqtt-dashboard.com";
-constexpr const char* MQTT_TOPIC = "smart-room-123";
+constexpr const char* MQTT_SERVER = "broker.hivemq.com";
+constexpr const char* MQTT_TOPIC = "smart-room-098";
 
 #endif
