@@ -3,29 +3,27 @@ import LightState from './LightState';
 import axios from 'axios';
 
 function LightUsageHistory() {
-  const [data, setData] = useState(
-    [{'state': 0, 'ts': '03/02/2023 12:48:53'}, {'state': 1, 'ts': '03/02/2023 12:49:29'}, {'state': 0, 'ts': '03/02/2023 12:49:31'}, {'state': 1, 'ts': '03/02/2023 12:50:03'}, {'state': 0, 'ts': '03/02/2023 12:50:05'}, {'state': 1, 'ts': '03/02/2023 12:50:06'}, {'state': 0, 'ts': '03/02/2023 12:50:07'}, {'state': 1, 'ts': '03/02/2023 12:50:08'}, {'state': 0, 'ts': '03/02/2023 12:50:10'}, {'state': 1, 'ts': '03/02/2023 12:50:14'}, {'state': 0, 'ts': '03/02/2023 12:50:16'}, {'state': 1, 'ts': '03/02/2023 12:50:18'}, {'state': 0, 'ts': '03/02/2023 12:50:21'}]
-  );
+  const [data, setData] = useState(null);
   const light_history_endpoint = 'http://localhost:1234/data';
 
+  const getLightHistory = async function () {
+    const response = await axios.get(light_history_endpoint);
+    const data = await response.json();
+
+    setData(data['light_logs']);
+  }
+
   useEffect(() => {
-    const getLightHistory = async function () {
-      const response = await axios.get(light_history_endpoint);
-      const data = await response.json();
-
-      setData(data['light_logs']);
-    }
-
     if (data === null) {
       getLightHistory();
     }
   }, [data]);
 
+  setTimeout(async () => await getLightHistory(), 500);
+
   if (data === null) {
     return <></>;
   }
-
-  console.log(data);
 
   return (
     <table className='mx-auto'>
