@@ -3,8 +3,8 @@ import axios from 'axios';
 
 function RollerBlindController() {
   const [value, setValue] = useState(-1);
-  const value_endpoint = 'http://localhost:1234/data';
-  const rollerblinds_endpoint = 'http://localhost:1234/rollerblinds';
+  const value_endpoint = 'http://localhost:5000/data';
+  const rollerblinds_endpoint = 'http://localhost:5000/rollerblinds';
 
   const updateValue = async function(evt) {
     const new_value = evt.target.value;
@@ -14,8 +14,7 @@ function RollerBlindController() {
 
   const getRollerBlindState = async function () {
     const response = await axios.get(value_endpoint);
-    const data = await response.json();
-    setValue(data.value);
+    setValue(response.data);
   }
 
   useEffect(() => {

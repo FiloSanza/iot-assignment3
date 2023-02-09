@@ -4,13 +4,12 @@ import axios from 'axios';
 
 function RoomStateDisplay() {
   const [room_state, setRoomState] = useState(null);
-  const room_state_endpoint = 'http://localhost:1234/data';
-  const light_endpoint = 'http://localhost:1234/light';
+  const room_state_endpoint = 'http://localhost:5000/data';
+  const light_endpoint = 'http://localhost:5000/light';
 
   const getRoomState = async function () {
     const response = await axios.get(room_state_endpoint);
-    const data = await response.json();
-    setRoomState(data);
+    setRoomState(response.data);
   }
   
   const toggleLight = async function () {

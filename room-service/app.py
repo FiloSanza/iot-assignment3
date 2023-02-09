@@ -1,5 +1,5 @@
 from flask import Flask, request
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from flask_mqtt import Mqtt
 import arduino_comm
 from datetime import datetime
@@ -12,6 +12,7 @@ arduino = arduino_comm.SerialLine(port="/dev/ttyACM0", baudrate=9600, timeout=0.
 
 app = Flask(__name__)
 CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 # Mqtt configuration
 app.config['MQTT_BROKER_URL'] = 'broker.hivemq.com' # See https://mosquitto.org/
@@ -109,6 +110,7 @@ def update_data():
         time.sleep(0.5)
 
 @app.route('/data', methods=['GET'])
+@cross_origin()
 def get_data():
     lock.acquire()
     response = json.dumps(data)
@@ -117,6 +119,7 @@ def get_data():
     return response
 
 @app.route('/light', methods=['POST'])
+@cross_origin()
 def update_light():
     lock.acquire()
     state = request.get_json()["light"]
@@ -130,9 +133,10 @@ def update_light():
     return response
     
 @app.route('/rollerblinds', methods=['POST'])
+@cross_origin()
 def update_rollerblinds():
     lock.acquire()
-    angle = request.get_json()["value"]
+    angle = request.get_json()["angle"]
     arduino.write_byte(f'{{"angle":{angle}}}')
     data[ROLLERBLINDS_STATE] = angle
 

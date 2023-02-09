@@ -1,6 +1,4 @@
 function LightState(props) {
-  console.log(props);
-
   return (
     <span className={ props.center ? 'justify-center' : 'inline-flex' }>
       {

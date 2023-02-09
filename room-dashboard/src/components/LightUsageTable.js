@@ -4,13 +4,11 @@ import axios from 'axios';
 
 function LightUsageHistory() {
   const [data, setData] = useState(null);
-  const light_history_endpoint = 'http://localhost:1234/data';
+  const light_history_endpoint = 'http://localhost:5000/data';
 
   const getLightHistory = async function () {
     const response = await axios.get(light_history_endpoint);
-    const data = await response.json();
-
-    setData(data['light_logs']);
+    setData(response.data['light_logs']);
   }
 
   useEffect(() => {
