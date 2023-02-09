@@ -20,7 +20,6 @@ class SerialLine():
             line = ''
             try:
                 line = self.arduino.read_until(b"\n")
-                print(line)
                 if (line[-1] == b"\n"):
                     line = line[:-1]
                 
@@ -34,9 +33,11 @@ class SerialLine():
             try:
                 msgs.append(json.loads(line))
             except Exception:
-                # Need to handle "half lines"
-                print("MERGE: ", self.half + line)
-                msgs.append(json.loads(self.half + line))
-                self.half = ""
+                try:
+                    # Need to handle "half lines"
+                    msgs.append(json.loads(self.half + line))
+                    self.half = ""
+                except:
+                    pass
 
         return msgs

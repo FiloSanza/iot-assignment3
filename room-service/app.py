@@ -28,21 +28,21 @@ data = {
         'state': "0",
         'ts': datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     }],
-    PIR_STATE: "0",
+    PIR_STATE: 0,
     LIGHT_STATE: "0",
-    ROLLERBLINDS_STATE: "0",
+    ROLLERBLINDS_STATE: 0,
 }
 bt_last_message = None
 
 def update_light_state(state):
-    if state == data[LIGHT_STATE]:
+    if int(state) == int(data[LIGHT_STATE]):
         return False
         
     data[LIGHT_LOGS].append({
-        'state': state,
+        'state': str(state),
         'ts': datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     })
-    data[LIGHT_STATE] = state
+    data[LIGHT_STATE] = str(state)
     
     return True
 
@@ -71,11 +71,11 @@ def handle_mqtt_message(client, userdata, message):
     changes = {}
 
     # open if someone enters after 8
-    if data[ROLLERBLINDS_STATE] == 0 and pir and datetime.now().hour >= 8:
+    if int(data[ROLLERBLINDS_STATE]) == 0 and pir and datetime.now().hour >= 8:
         data[ROLLERBLINDS_STATE] = 100
         changes['angle'] = 100
 
-    if data[ROLLERBLINDS_STATE] > 0 and not pir and datetime.now().hour > 19:
+    if int(data[ROLLERBLINDS_STATE]) > 0 and not pir and datetime.now().hour > 19:
         data[ROLLERBLINDS_STATE] = 0
         changes['angle'] = 0
     
@@ -93,7 +93,6 @@ def update_data():
     
     while True:
         serial_data = arduino.read()
-        print(serial_data)
         lock.acquire()
         for msg in serial_data:
             # The light state has been updated

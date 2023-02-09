@@ -33,7 +33,7 @@ function RoomStateDisplay() {
     <div className='w-1/2'>
       <div className='mx-auto max-w-fit'>
         <p onClick={toggleLight}> The light is: <LightState light_on={Number.parseInt(room_state.light)} /> </p> 
-        <p> The room is currently: <span> { room_state.pir ? 'Occupied' : 'Empty' } </span> </p>
+        <p> The room is currently: <span> { room_state.pir_state ? 'Occupied' : 'Empty' } </span> </p>
       </div>
     </div>
   )
