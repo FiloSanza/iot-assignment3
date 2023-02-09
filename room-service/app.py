@@ -25,12 +25,12 @@ mqtt = Mqtt(app)
 lock = threading.Lock()
 data = {
     LIGHT_LOGS: [{
-        'state': 0,
+        'state': "0",
         'ts': datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     }],
-    PIR_STATE: 0,
-    LIGHT_STATE: 0,
-    ROLLERBLINDS_STATE: 0,
+    PIR_STATE: "0",
+    LIGHT_STATE: "0",
+    ROLLERBLINDS_STATE: "0",
 }
 bt_last_message = None
 

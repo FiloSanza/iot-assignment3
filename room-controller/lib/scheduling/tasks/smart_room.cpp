@@ -43,8 +43,7 @@ namespace Tasks {
     void SmartRoom::updateRoom(Logger::Message* log_msg, Msg* msg) {
         DeserializationError error = deserializeJson(*doc, msg->getContent());
         if (error) {
-            Serial.print(F("deserializeJson() failed: "));
-            Serial.println(error.f_str());
+            return;
         }
 
         if (doc->containsKey("light")) {

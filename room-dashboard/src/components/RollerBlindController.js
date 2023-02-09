@@ -14,16 +14,16 @@ function RollerBlindController() {
 
   const getRollerBlindState = async function () {
     const response = await axios.get(value_endpoint);
-    setValue(response.data);
+    const angle = response.data["angle"] / 180.0 * 100.0;
+    setValue(angle);
   }
 
   useEffect(() => {
     if (value === -1) {
-      getRollerBlindState();
+      setInterval(async () => await getRollerBlindState(), 500);
     }
   }, [value]);
 
-  setTimeout(async () => await getRollerBlindState(), 500);
   
   if (value === null) {
     return <></>;

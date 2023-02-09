@@ -13,11 +13,9 @@ function LightUsageHistory() {
 
   useEffect(() => {
     if (data === null) {
-      getLightHistory();
+      setInterval(async () => await getLightHistory(), 500);
     }
   }, [data]);
-
-  setTimeout(async () => await getLightHistory(), 500);
 
   if (data === null) {
     return <></>;
@@ -36,7 +34,7 @@ function LightUsageHistory() {
           data.map(row => {
             return (
               <tr key={ row.ts }>
-                <td className='w-40'> <LightState center light_on={ row.state }/> </td>
+                <td className='w-40'> <LightState center light_on={ Number.parseInt(row.state) }/> </td>
                 <td className='w-40'> { row.ts } </td>
               </tr>
             );

@@ -13,18 +13,17 @@ function RoomStateDisplay() {
   }
   
   const toggleLight = async function () {
-    const new_state = room_state.light_state ? 0 : 1;
-    await axios.post(light_endpoint, { 'light': new_state })
+    const new_state = Number.parseInt(room_state.light) ? "0" : "1";
+    await axios.post(light_endpoint, { light: new_state })
       .then(async res => await getRoomState());
   }
 
   useEffect(() => {
     if (room_state === null) {
-      getRoomState();
+      setInterval(async () => await getRoomState(), 500);
     }
   }, [room_state]);
 
-  setTimeout(async () => await getRoomState(), 500);
 
   if (room_state === null) {
     return <></>;
@@ -33,7 +32,7 @@ function RoomStateDisplay() {
   return (
     <div className='w-1/2'>
       <div className='mx-auto max-w-fit'>
-        <p onClick={toggleLight}> The light is: <LightState light_on={room_state.light_state} /> </p> 
+        <p onClick={toggleLight}> The light is: <LightState light_on={Number.parseInt(room_state.light)} /> </p> 
         <p> The room is currently: <span> { room_state.pir ? 'Occupied' : 'Empty' } </span> </p>
       </div>
     </div>
