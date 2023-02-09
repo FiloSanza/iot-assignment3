@@ -1,0 +1,9 @@
+@startuml sensor-board
+
+[*] --> UpdateRoom
+UpdateRoom --> UpdateRoom : after 1s
+
+UpdateRoom : movement detected / led on
+UpdateRoom : do / send log to server
+
+@enduml

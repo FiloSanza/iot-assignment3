@@ -1,0 +1,9 @@
+@startuml controller
+
+[*] --> SmartRoom
+SmartRoom --> SmartRoom : after 1s
+
+SmartRoom : serial msg available / update room and send log to server
+SmartRoom : bt msg available / update room and send log to server
+
+@enduml
